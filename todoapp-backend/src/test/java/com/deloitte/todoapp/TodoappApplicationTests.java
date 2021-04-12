@@ -47,7 +47,8 @@ public class TodoappApplicationTests {
 
 	@Test
 	public void testAllTasksGet() throws Exception {
-		this.mvc.perform(MockMvcRequestBuilders.get("/todo/get-all-tasks").param("userName", "test"))
+		this.mvc.perform(
+				MockMvcRequestBuilders.get("/todo/get-all-tasks").param("userName", "test").param("completed", "false"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
