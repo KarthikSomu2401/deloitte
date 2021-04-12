@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import NavHeader from "./navbar.component";
 import Cookies from "universal-cookie";
-import { FaRegPlusSquare } from "react-icons/fa";
+import { FaCheck, FaEdit, FaRegPlusSquare, FaTrash } from "react-icons/fa";
 import DateTimePicker from 'react-datetime-picker';
 const cookies = new Cookies();
 
@@ -36,8 +36,8 @@ export default class Dashboard extends Component {
                         <div className="row">
                             <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2"><h3 className="float-left">{task.taskName}</h3></div>
                             <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDateTime}</p></div>
-                            <div className="col-lg-4 col-md-4 col-sm-4 col-xs-4"><p className="float-left">{task.taskDescription}</p></div>
-                            <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}>Delete Task</button><button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}>Edit Task</button></div>
+                            <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDescription}</p></div>
+                            <div className="col-lg-4 col-md-4 col-sm-4 col-xs-4"><button className="btn btn-success crd-btn float-right" onClick={() => this.handleComplete(task.id)}><FaCheck /></button><button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}><FaTrash /></button><button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}><FaEdit /></button></div>
                         </div>
                     </div>
                 </div>
@@ -67,8 +67,8 @@ export default class Dashboard extends Component {
                         <div className="row">
                             <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2"><h3 className="float-left">{task.taskName}</h3></div>
                             <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDateTime}</p></div>
-                            <div className="col-lg-4 col-md-4 col-sm-4 col-xs-4"><p className="float-left">{task.taskDescription}</p></div>
-                            <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}>Delete Task</button><button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}>Edit Task</button></div>
+                            <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDescription}</p></div>
+                            <div className="col-lg-4 col-md-4 col-sm-4 col-xs-4"><button className="btn btn-success crd-btn float-right" onClick={() => this.handleComplete(task.id)}><FaCheck /></button><button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}><FaTrash /></button><button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}><FaEdit /></button></div>
                         </div>
                     </div>
                 </div>
@@ -138,6 +138,16 @@ export default class Dashboard extends Component {
         this.myTasksRefresh(tasks);
     }
 
+    handleComplete(id) {
+        const requestOptions = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+        };
+        fetch(`${process.env.REACT_APP_API_URL}/todo/mark-complete?taskId=${id}`, requestOptions)
+            .then((data) => {
+                this.getFreshData(cookies.get("userName"));
+            });
+    }
     handleDelete(id) {
         const requestOptions = {
             method: "DELETE",
@@ -163,8 +173,8 @@ export default class Dashboard extends Component {
                     this.setState({
                         userTasksOriginal: this.state.userTasksOriginal.concat(data)
                     })
-                    this.myTasksRefresh(data);
                 }
+                this.myTasksRefresh(data);
             });
     }
     componentDidMount() {

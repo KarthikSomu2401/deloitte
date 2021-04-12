@@ -36,9 +36,14 @@ public class ToDoAppController {
 	public String deleteToDo(@RequestParam Integer taskId) {
 		return taskService.deleteTask(taskId);
 	}
-	
+
 	@GetMapping("/get-all-tasks")
 	public List<Task> deleteToDo(@RequestParam String userName) {
 		return taskService.getAllTasks(userName);
+	}
+
+	@PutMapping("/mark-complete")
+	public Task completeToDo(@RequestParam Integer taskId) {
+		return taskService.markTaskComplete(taskId);
 	}
 }

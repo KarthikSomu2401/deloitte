@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,7 +86,18 @@ public class TaskServiceImpl implements TaskService {
 	@Override
 	public List<Task> getAllTasks(String userName) {
 		User user = userRepository.findByUserName(userName);
-		return user.getTasks();
+		return user.getTasks().stream().filter(task -> task.isComplete() != true).collect(Collectors.toList());
+	}
+
+	@Override
+	public Task markTaskComplete(Integer taskId) {
+		Optional<Task> taskOptional = taskRepository.findById(taskId);
+		if (taskOptional.isPresent()) {
+			Task task = taskOptional.get();
+			task.setComplete(true);
+			return taskRepository.save(task);
+		}
+		return null;
 	}
 
 }
