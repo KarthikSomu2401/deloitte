@@ -30,7 +30,7 @@ class NavHeader extends Component {
         return (
             <div>
                 <nav className="mb-1 navbar navbar-expand-lg navbar-light bg-light navcolor-light">
-                    <a className="navbar-brand nav-title" href="/dashboard">
+                    <a className="navbar-brand nav-title" href="dashboard/">
                         Hi, {this.capitalize(this.state.userName)}
                     </a>
                     <span
@@ -50,7 +50,7 @@ class NavHeader extends Component {
                     >
                         {/* <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <a className="nav-link nav-title" href="/dashboard">
+                                <a className="nav-link nav-title" href="dashboard/">
                                     Home
                 </a>
                             </li>

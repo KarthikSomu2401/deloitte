@@ -38,7 +38,7 @@ export default class Login extends Component {
                     }, 1000);
                 });
                 promise1.then(function (value) {
-                    window.location.pathname = "/dashboard";
+                    window.location.href = "#/dashboard";
                 });
             });
     }

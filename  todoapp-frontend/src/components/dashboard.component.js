@@ -253,7 +253,6 @@ export default class Dashboard extends Component {
                                 </div>
                                 <form onSubmit={this.handleUpdate}>
                                     <div className="modal-body">
-                                        <input type="hidden" value=""></input>
                                         <div className="form-group">
                                             <label htmlFor="taskName" className="col-form-label">Name</label>
                                             <input type="text" className="form-control" id="updateTaskName" name="updateTaskName" value={this.state.updateTaskName} onChange={this.myChangeHandler} />
