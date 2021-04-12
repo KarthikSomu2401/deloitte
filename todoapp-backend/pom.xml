@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.deloitte</groupId>
-	<artifactId>todoapp</artifactId>
+	<artifactId>todoapp-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>todoapp</name>
+	<name>todoapp-backend</name>
 	<description>Interview Project for Deloitte</description>
 	<properties>
 		<java.version>11</java.version>
