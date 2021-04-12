@@ -11,7 +11,7 @@ public interface TaskService {
 
 	abstract String deleteTask(Integer taskId);
 
-	abstract List<Task> getAllTasks(String userName);
+	abstract List<Task> getAllTasks(String userName, String completed);
 
 	abstract Task markTaskComplete(Integer taskId);
 }

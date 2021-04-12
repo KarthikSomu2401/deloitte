@@ -84,9 +84,10 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public List<Task> getAllTasks(String userName) {
+	public List<Task> getAllTasks(String userName, String completed) {
 		User user = userRepository.findByUserName(userName);
-		return user.getTasks().stream().filter(task -> task.isComplete() != true).collect(Collectors.toList());
+		return user.getTasks().stream().filter(task -> task.isComplete() == Boolean.parseBoolean(completed))
+				.collect(Collectors.toList());
 	}
 
 	@Override

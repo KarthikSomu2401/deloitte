@@ -38,8 +38,8 @@ public class ToDoAppController {
 	}
 
 	@GetMapping("/get-all-tasks")
-	public List<Task> deleteToDo(@RequestParam String userName) {
-		return taskService.getAllTasks(userName);
+	public List<Task> deleteToDo(@RequestParam String userName, @RequestParam String completed) {
+		return taskService.getAllTasks(userName, completed);
 	}
 
 	@PutMapping("/mark-complete")

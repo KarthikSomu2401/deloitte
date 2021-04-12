@@ -20,6 +20,7 @@ export default class Dashboard extends Component {
             updateTaskName: "",
             updateTaskDescription: "",
             updateTaskDateTime: new Date(),
+            seeCompleted: false,
 
         };
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -27,8 +28,10 @@ export default class Dashboard extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.myChangeHandler = this.myChangeHandler.bind(this);
     }
-
     myTasksArrange = function (tasks) {
+        const scrollStyle = {
+            overflowX: 'scroll'
+        }
         const postData = tasks.map((task) => (
             <React.Fragment key={task.id}>
                 <div className="card">
@@ -36,12 +39,12 @@ export default class Dashboard extends Component {
                         <div className="row">
                             <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2"><h3 className="float-left">{task.taskName}</h3></div>
                             <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDateTime}</p></div>
-                            <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDescription}</p></div>
-                            <div className="col-lg-4 col-md-4 col-sm-4 col-xs-4"><button className="btn btn-success crd-btn float-right" onClick={() => this.handleComplete(task.id)}><FaCheck /></button><button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}><FaTrash /></button><button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}><FaEdit /></button></div>
+                            <div className="col-lg-5 col-md-5 col-sm-5 col-xs-5" style={scrollStyle}> <p className="float-left">{task.taskDescription}</p></div>
+                            <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2">{task.complete ? <span></span> : <button className="btn btn-success crd-btn float-right" onClick={() => this.handleComplete(task.id)}><FaCheck /></button>}<button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}><FaTrash /></button>{task.complete ? <span></span> : <button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}><FaEdit /></button>}</div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
+            </React.Fragment >
         ));
 
         this.setState({
@@ -56,7 +59,11 @@ export default class Dashboard extends Component {
             updateTaskDateTime: new Date(value.taskDateTime),
         })
     }
+
     myTasksRefresh = function (tasks) {
+        const scrollStyle = {
+            overflowX: 'scroll'
+        }
         this.setState({
             userTasks: [],
         });
@@ -67,8 +74,8 @@ export default class Dashboard extends Component {
                         <div className="row">
                             <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2"><h3 className="float-left">{task.taskName}</h3></div>
                             <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDateTime}</p></div>
-                            <div className="col-lg-3 col-md-3 col-sm-3 col-xs-3"><p className="float-left">{task.taskDescription}</p></div>
-                            <div className="col-lg-4 col-md-4 col-sm-4 col-xs-4"><button className="btn btn-success crd-btn float-right" onClick={() => this.handleComplete(task.id)}><FaCheck /></button><button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}><FaTrash /></button><button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}><FaEdit /></button></div>
+                            <div className="col-lg-5 col-md-5 col-sm-5 col-xs-5" style={scrollStyle}> <p className="float-left">{task.taskDescription}</p></div>
+                            <div className="col-lg-2 col-md-2 col-sm-2 col-xs-2">{task.complete ? <span></span> : <button className="btn btn-success crd-btn float-right" onClick={() => this.handleComplete(task.id)}><FaCheck /></button>}<button className="btn btn-danger crd-btn float-right" onClick={() => this.handleDelete(task.id)}><FaTrash /></button>{task.complete ? <span></span> : <button className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#updateTaskModal" onClick={this.displayData(task)}><FaEdit /></button>}</div>
                         </div>
                     </div>
                 </div>
@@ -78,7 +85,14 @@ export default class Dashboard extends Component {
             userTasks: this.state.userTasks.concat(postData),
         });
     };
-
+    displayCompleted() {
+        this.seeCompleted = true;
+        this.getFreshData(cookies.get("userName"), "true");
+    }
+    displayNonCompleted() {
+        this.seeCompleted = false;
+        this.getFreshData(cookies.get("userName"), "false");
+    }
     handleSubmit(event) {
         event.preventDefault();
         let formdata = {
@@ -121,7 +135,7 @@ export default class Dashboard extends Component {
         fetch(`${process.env.REACT_APP_API_URL}/todo/update-task?userName=${cookies.get("userName")}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
-                this.getFreshData(cookies.get("userName"));
+                this.getFreshData(cookies.get("userName"), "false");
                 this.setState({
                     updateTaskName: "",
                     updateTaskDescription: "",
@@ -145,7 +159,7 @@ export default class Dashboard extends Component {
         };
         fetch(`${process.env.REACT_APP_API_URL}/todo/mark-complete?taskId=${id}`, requestOptions)
             .then((data) => {
-                this.getFreshData(cookies.get("userName"));
+                this.getFreshData(cookies.get("userName"), "false");
             });
     }
     handleDelete(id) {
@@ -158,12 +172,12 @@ export default class Dashboard extends Component {
                 this.deleteTask(id);
             });
     }
-    getFreshData(userName) {
+    getFreshData(userName, completed) {
         const requestOptions = {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         };
-        fetch(`${process.env.REACT_APP_API_URL}/todo/get-all-tasks?userName=${userName}`, requestOptions)
+        fetch(`${process.env.REACT_APP_API_URL}/todo/get-all-tasks?userName=${userName}&completed=${completed}`, requestOptions)
             .then((response) => response.json())
             .then((data) => {
                 this.setState({
@@ -180,7 +194,7 @@ export default class Dashboard extends Component {
     componentDidMount() {
         if (cookies.get("userName") != null) {
             this.setState({ userName: cookies.get("userName") });
-            this.getFreshData(cookies.get("userName"));
+            this.getFreshData(cookies.get("userName"), "false");
         } else {
             window.location.href = "/";
         }
@@ -262,8 +276,14 @@ export default class Dashboard extends Component {
                     </div>
                     <div className="row">
                         <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <button type="button" className="btn btn-primary float-right" data-toggle="modal" data-target="#addTaskModal">
+                            <button type="button" className="btn btn-primary crd-btn float-right" data-toggle="modal" data-target="#addTaskModal">
                                 <FaRegPlusSquare /> Add ToDo
+                            </button>
+                            <button type="button" hidden={this.seeCompleted} className="btn btn-success crd-btn float-right" onClick={() => this.displayCompleted()}>
+                                <FaCheck /> See Completed
+                            </button>
+                            <button type="button" hidden={!this.seeCompleted} className="btn btn-warning crd-btn float-right" onClick={() => this.displayNonCompleted()}>
+                                <FaCheck /> See InComplete
                             </button>
                         </div>
                     </div>
